@@ -1,4 +1,4 @@
-package com.epita.mti.tinytube.Activity;
+package com.epita.mti.tinytube.activity;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -9,9 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.epita.mti.tinytube.R;
+import com.epita.mti.tinytube.controller.ControllerCallback;
+import com.epita.mti.tinytube.controller.TinytubeController;
+import com.epita.mti.tinytube.model.Model;
+import com.epita.mti.tinytube.model.TinytubeModel;
 
 
 public class HomeActivity extends ActionBarActivity {
@@ -30,6 +35,29 @@ public class HomeActivity extends ActionBarActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+
+        // Test
+        TinytubeController controller = new TinytubeController();
+        controller.search(new ControllerCallback<TinytubeModel>() {
+            @Override
+            public void onResponse(TinytubeModel response) {
+                final TextView tv = (TextView)findViewById(R.id.hello);
+                final StringBuilder sb = new StringBuilder();
+
+                sb.append("Results: ").append(response.getResults());
+                sb.append("\nItems: ");
+
+                for (TinytubeModel.Item item : response.getItems())
+                    sb.append("\n  * ").append(item.getSnippet().getTitle());
+
+                tv.setText(sb.toString());
+            }
+
+            @Override
+            public void onError(Exception error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 
@@ -71,3 +99,4 @@ public class HomeActivity extends ActionBarActivity {
         }
     }
 }
+
