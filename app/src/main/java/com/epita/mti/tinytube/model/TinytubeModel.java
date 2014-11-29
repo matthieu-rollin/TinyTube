@@ -19,7 +19,6 @@ public class TinytubeModel extends Model {
      * Mapping of the JSON object Item
      */
     public static class Item {
-
         /**
          * Mapping of the JSON object Id
          */

@@ -1,6 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context=".HomeActivity">
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".ItemsActivity">
+
+    <item android:id="@+id/action_share"
+        android:title="@string/action_share"
+        android:icon="@android:drawable/ic_menu_share"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_about"
         android:title="@string/action_about"

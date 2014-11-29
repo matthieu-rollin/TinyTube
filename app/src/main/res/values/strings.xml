@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">TinyTube</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_title">TinyTube</string>
+    <string name="action_share">Partager</string>
+    <string name="action_about">A propos</string>
 
-    <!-- App colors -->
-    <color name="colorPrimary">@color/background_material_light</color>
-    <color name="colorPrimaryDark">@color/base_red</color>
-    <color name="colorBackground">@color/background_material_light</color>
-    <color name="textColorPrimary">@android:color/primary_text_light</color>
+    <string name="developers_presentation">Application développée par :</string>
+    <string name="developer_backend">Gary Damême (dameme_g)</string>
+    <string name="developer_frontend">Matthieu Rollin (rollin_a)</string>
+
+    <string name="empty_text">Désolé, il n\'y a aucune vidéo disponible.</string>
+    <string name="share_text">Regarde ce lien</string>
+
+    <string name="base_uri">http://m.youtube.com/watch?v=</string>
+
+    <!-- Dialog strings -->
+    <string name="dialog_title_error">Erreur</string>
+    <string name="dialog_content_error">Impossible de récuperer les données.</string>
 </resources>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout_video">
+
+        <com.epita.mti.tinytube.design.ListenableVideoView
+            android:id="@+id/item_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/layout_thumbnail">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:id="@+id/item_thumbnail"/>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:src="@android:drawable/ic_media_play"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_video"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:padding="@dimen/activity_vertical_margin">
+
+            <TextView
+                style="@style/Title"
+                android:id="@+id/item_title"
+                android:paddingTop="0dp"
+                android:textAllCaps="true"/>
+            <TextView
+                style="@style/SubTitle"
+                android:id="@+id/item_channel"
+                android:layout_below="@id/item_title" />
+
+            <TextView
+                style="@style/SubTitle"
+                android:id="@+id/item_date"
+                android:layout_below="@id/item_channel"/>
+
+            <View
+                android:id="@+id/item_separator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/item_date"
+                android:background="@android:color/darker_gray"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                style="@style/SubTitle"
+                android:id="@+id/item_description"
+                android:layout_below="@id/item_separator"/>
+
+        </RelativeLayout>
+
+    </ScrollView>
+</RelativeLayout>
