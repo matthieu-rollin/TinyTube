@@ -14,4 +14,9 @@ public class RequestConfig {
      * Project endpoint
      */
     public static final String ENDPOINT = "http://www.tutos-android.com/projet";
+
+    /**
+     * YouTube key
+     */
+    public static final String YOUTUBE_API_KEY = "AIzaSyDrp-xAPpgQyhhIWtdJk4xR9i6lg6vu9xI";
 }

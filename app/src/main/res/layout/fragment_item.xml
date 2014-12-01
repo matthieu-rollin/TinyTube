@@ -8,35 +8,21 @@
         android:layout_height="@dimen/player_height"
         android:id="@+id/layout_video">
 
-        <com.epita.mti.tinytube.design.ListenableVideoView
-            android:id="@+id/item_video"
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:id="@+id/item_thumbnail"/>
 
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:id="@+id/play_btn"
+            android:src="@android:drawable/ic_media_play"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/layout_thumbnail">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:id="@+id/item_thumbnail"/>
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerInParent="true"
-                android:src="@android:drawable/ic_media_play"/>
-
-         </RelativeLayout>
-
-     </RelativeLayout>
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
