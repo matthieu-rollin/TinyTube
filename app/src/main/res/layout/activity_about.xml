@@ -23,4 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
 
+    <TextView
+        style="@style/Title"
+        android:text="@string/developer_extra"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
 </LinearLayout>

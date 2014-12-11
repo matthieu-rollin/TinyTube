@@ -19,13 +19,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.ChannelActivity"
+            android:label=""
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity
             android:name=".activity.ItemsActivity"
             android:label=""
-            android:theme="@style/AppTheme.Overlay"
-            android:parentActivityName=".activity.HomeActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomeActivity" />
+            android:theme="@style/AppTheme.Overlay">
         </activity>
         <activity
             android:name=".activity.AboutActivity"

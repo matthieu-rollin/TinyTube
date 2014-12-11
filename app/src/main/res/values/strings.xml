@@ -8,6 +8,7 @@
     <string name="developers_presentation">Application développée par :</string>
     <string name="developer_backend">Gary Damême (dameme_g)</string>
     <string name="developer_frontend">Matthieu Rollin (rollin_a)</string>
+    <string name="developer_extra">Yohann Vergez (vergez_y)</string>
 
     <string name="empty_text">Désolé, il n\'y a aucune vidéo disponible.</string>
     <string name="share_text">Regarde ce lien</string>

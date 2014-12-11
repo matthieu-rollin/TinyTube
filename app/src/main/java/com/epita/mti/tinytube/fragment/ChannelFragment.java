@@ -1,18 +1,20 @@
 package com.epita.mti.tinytube.fragment;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.epita.mti.tinytube.R;
+import com.epita.mti.tinytube.activity.ChannelActivity;
 import com.epita.mti.tinytube.activity.ItemsActivity;
 import com.epita.mti.tinytube.adapter.ItemAdapter;
 import com.epita.mti.tinytube.controller.ControllerCallback;
@@ -23,7 +25,9 @@ import com.epita.mti.tinytube.model.TinyTubeModel.Item;
 import com.epita.mti.tinytube.request.JacksonRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A fragment representing a list of Items.
@@ -32,8 +36,8 @@ import java.util.ArrayList;
  * with a GridView.
  * <p/>
  */
-public class HomeFragment extends Fragment {
-    private static final String TAG = HomeFragment.class.getSimpleName();
+public class ChannelFragment extends Fragment {
+    private static final String TAG = ChannelFragment.class.getSimpleName();
 
     /**
      * The fragment's ListView/GridView.
@@ -46,96 +50,65 @@ public class HomeFragment extends Fragment {
      */
     private ItemAdapter mAdapter;
 
-    /**
-     * The response get after the data loading
-     */
-    private TinyTubeModel mResponse;
+
+    private Items mItems;
+    private ArrayList<Item> mItemsArray;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public HomeFragment() {
+    public ChannelFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (getArguments() == null) {
+            Log.e(TAG, "getArguments() is null");
+            getActivity().finish();
+        }
+
         mAdapter = new ItemAdapter(getActivity(), 0, new ArrayList<Item>());
+        mItems = new Items();
+        mItemsArray = new ArrayList<>();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_channel, container, false);
+
+        try {
+            mItems = JacksonRequest.getObjectMapper().readValue(getArguments().getString(ItemFragment.EXTRAS_ITEMS), Items.class);
+            mItemsArray = new ArrayList<>(mItems.getItems());
+
+            ((ChannelActivity)getActivity()).getSupportActionBar().setTitle(mItemsArray.get(0).getSnippet().getChannelTitle());
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+        }
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
+        mAdapter.addAll(mItemsArray);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), ItemsActivity.class);
                 intent.putExtra(ItemsActivity.EXTRAS_ITEM_PLACE, position);
+
                 try {
-                    Items items = new Items();
-                    items.setItems(mResponse.getItems());
-                    intent.putExtra(ItemsActivity.EXTRAS_ITEMS, JacksonRequest.getObjectMapper().writeValueAsString(items));
+                    intent.putExtra(ItemsActivity.EXTRAS_ITEMS, JacksonRequest.getObjectMapper().writeValueAsString(mItems));
                     startActivity(intent);
                 } catch (JsonProcessingException e) {
                     Log.e(TAG, e.getMessage());
                 }
             }
         });
-
-        loadData();
-
         return view;
-    }
-
-    private void loadData() {
-        TinyTubeController controller = new TinyTubeController();
-        controller.search(new ControllerCallback<TinyTubeModel>() {
-            @Override
-            public void onResponse(TinyTubeModel response) {
-                mResponse = response;
-                if (response.getItems().size() == 0)
-                    setEmptyText(getString(R.string.empty_text));
-                else
-                    mAdapter.addAll(response.getItems());
-            }
-
-            @Override
-            public void onError(Exception error) {
-                Log.e(TAG, error.getMessage());
-                final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                        .title(getString(R.string.dialog_title_error))
-                        .content(getString(R.string.dialog_content_error))
-                        .callback(new MaterialDialog.SimpleCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                dialog.cancel();
-                            }
-                        })
-                        .build();
-                dialog.show();
-            }
-        });
-    }
-
-    /**
-     * The default content for this Fragment has a TextView that is shown when
-     * the list is empty. If you would like to change the text, call this method
-     * to supply the text it should use.
-     */
-    public void setEmptyText(CharSequence emptyText) {
-        View emptyView = mListView.getEmptyView();
-
-        if (emptyView instanceof TextView) {
-            ((TextView) emptyView).setText(emptyText);
-        }
     }
 }

@@ -16,9 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.epita.mti.tinytube.R;
+import com.epita.mti.tinytube.activity.ChannelActivity;
+import com.epita.mti.tinytube.activity.HomeActivity;
 import com.epita.mti.tinytube.activity.ItemsActivity;
 import com.epita.mti.tinytube.design.PaletteTransformation;
-import com.epita.mti.tinytube.model.TinytubeModel.Item;
+import com.epita.mti.tinytube.model.TinyTubeModel.Item;
 import com.epita.mti.tinytube.request.JacksonRequest;
 import com.epita.mti.tinytube.request.RequestConfig;
 import com.epita.mti.tinytube.util.DateUtil;
@@ -38,7 +40,7 @@ public class ItemFragment extends Fragment {
     private static final String TAG = ItemFragment.class.getSimpleName();
 
     public static final String EXTRAS_ITEM_ID = "item_id";
-    public static final String ITEM = "item";
+    public static final String EXTRAS_ITEMS = "items";
 
     private int mItemId;
     private Item mItem;
@@ -68,19 +70,7 @@ public class ItemFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        try {
-            outState.putString(ITEM, JacksonRequest.getObjectMapper().writeValueAsString(mItem));
-        } catch (JsonProcessingException e) { Log.e(TAG, e.getMessage()); }
-
-    }
-
-    /**
-     * Called when the fragment is no longer in use.  This is called
-     * after {@link #onStop()} and before {@link #onDetach()}.
-     */
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+        outState.putInt(EXTRAS_ITEM_ID, mItemId);
     }
 
     @Override
@@ -91,13 +81,6 @@ public class ItemFragment extends Fragment {
             Log.e(TAG, "getArguments() is null");
             getActivity().finish();
         }
-
-        if (savedInstanceState == null) {
-            mItemId = getArguments().getInt(EXTRAS_ITEM_ID);
-
-            if (mItemId > -1 && getActivity() instanceof ItemsActivity)
-                mItem = ((ItemsActivity)getActivity()).getItems().get(mItemId);
-        }
     }
 
     @Override
@@ -106,16 +89,34 @@ public class ItemFragment extends Fragment {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_item, container, false);
 
-        if (savedInstanceState != null)
-            try {
-                mItem = JacksonRequest.getObjectMapper().readValue(savedInstanceState.getString(ITEM), Item.class);
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-            }
+        if (savedInstanceState == null)
+            mItemId = getArguments().getInt(EXTRAS_ITEM_ID);
+        else
+            mItemId = savedInstanceState.getInt(EXTRAS_ITEM_ID);
+
+        if (mItemId > -1 && getActivity() instanceof ItemsActivity)
+            mItem = ((ItemsActivity)getActivity()).getItems().get(mItemId);
 
         // Fill data
         ((TextView)view.findViewById(R.id.item_title)).setText(mItem.getSnippet().getTitle());
-        ((TextView)view.findViewById(R.id.item_channel)).setText(mItem.getSnippet().getChannelTitle());
+        final TextView itemChannel = (TextView)view.findViewById(R.id.item_channel);
+        itemChannel.setText(mItem.getSnippet().getChannelTitle());
+        itemChannel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ChannelActivity.class);
+                try {
+                    intent.putExtra(ItemFragment.EXTRAS_ITEMS,
+                            JacksonRequest.getObjectMapper().writeValueAsString(
+                                    ((ItemsActivity)getActivity()).mItemsByChannel.get(itemChannel.getText())));
+                    startActivity(intent);
+                } catch (JsonProcessingException e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+        });
+
+
         ((TextView)view.findViewById(R.id.item_date)).setText(DateUtil.timeAgoInWords(mItem.getSnippet().getPublishedAt()));
         ((TextView)view.findViewById(R.id.item_description)).setText(mItem.getSnippet().getDescription());
 

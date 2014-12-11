@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.epita.mti.tinytube.R;
 import com.epita.mti.tinytube.design.PaletteTransformation;
-import com.epita.mti.tinytube.model.TinytubeModel.Item;
+import com.epita.mti.tinytube.model.TinyTubeModel.Item;
 import com.epita.mti.tinytube.util.DateUtil;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

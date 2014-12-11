@@ -14,12 +14,13 @@ import android.view.MenuItem;
 
 import com.epita.mti.tinytube.R;
 import com.epita.mti.tinytube.adapter.ScreenSlidePagerAdapter;
-import com.epita.mti.tinytube.model.TinytubeModel;
-import com.epita.mti.tinytube.model.TinytubeModel.Item;
+import com.epita.mti.tinytube.model.Items;
+import com.epita.mti.tinytube.model.TinyTubeModel.Item;
 import com.epita.mti.tinytube.request.JacksonRequest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ItemsActivity extends ActionBarActivity {
@@ -30,7 +31,10 @@ public class ItemsActivity extends ActionBarActivity {
     public static final String EXTRAS_ITEMS = "items";
 
     private int mItemPlace;
+    public String mItemsString;
     private ArrayList<Item> mItems;
+    public HashMap<String, Items> mItemsByChannel;
+
 
     public ArrayList<Item> getItems() {
         return mItems;
@@ -51,19 +55,44 @@ public class ItemsActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRAS_ITEM_PLACE, mItemPlace);
+        outState.putString(EXTRAS_ITEMS, mItemsString);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mItemsByChannel = new HashMap<>();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        mItemPlace = getIntent().getIntExtra(EXTRAS_ITEM_PLACE, -1);
+        if (savedInstanceState == null) {
+            mItemPlace = getIntent().getIntExtra(EXTRAS_ITEM_PLACE, -1);
+            mItemsString = getIntent().getStringExtra(EXTRAS_ITEMS);
+        } else {
+            mItemPlace = savedInstanceState.getInt(EXTRAS_ITEM_PLACE);
+            mItemsString = savedInstanceState.getString(EXTRAS_ITEMS);
+        }
+
         try {
-            TinytubeModel model = JacksonRequest.getObjectMapper().readValue(getIntent().getStringExtra(EXTRAS_ITEMS), TinytubeModel.class);
-            mItems = new ArrayList<>(model.getItems());
+            mItems = new ArrayList<>(JacksonRequest.getObjectMapper().readValue(mItemsString, Items.class).getItems());
+
+            for (Item i : mItems) {
+                if (!mItemsByChannel.containsKey(i.getSnippet().getChannelTitle())) {
+                    Items items = new Items();
+                    items.setItems(new ArrayList<Item>());
+                    mItemsByChannel.put(i.getSnippet().getChannelTitle(), items);
+                }
+
+                mItemsByChannel.get(i.getSnippet().getChannelTitle()).getItems().add(i);
+            }
         } catch (IOException e) {
-              Log.e(TAG, e.getMessage());
+            Log.e(TAG, e.getMessage());
         }
 
         if (mItemPlace < -1) {
@@ -95,7 +124,9 @@ public class ItemsActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_about) {
+        if (id == android.R.id.home) {
+            finish();
+        } else if (id == R.id.action_about) {
             startActivity(new Intent(this, AboutActivity.class));
             return true;
         } else if (id == R.id.action_share) {

@@ -9,7 +9,7 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import com.epita.mti.tinytube.fragment.ItemFragment;
-import com.epita.mti.tinytube.model.TinytubeModel.Item;
+import com.epita.mti.tinytube.model.TinyTubeModel.Item;
 
 import java.util.ArrayList;
 
