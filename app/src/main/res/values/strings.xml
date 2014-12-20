@@ -18,4 +18,9 @@
     <!-- Dialog strings -->
     <string name="dialog_title_error">Erreur</string>
     <string name="dialog_content_error">Impossible de récuperer les données.</string>
+    <string name="dialog_retry">Réessayer</string>
+    <string name="dialog_quit">Quitter</string>
+
+    <string name="progress_dialog_text">Récupération des données&#8230;</string>
+
 </resources>

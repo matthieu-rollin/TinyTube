@@ -51,6 +51,11 @@ public class HomeFragment extends Fragment {
      */
     private TinyTubeModel mResponse;
 
+
+    private MaterialDialog mProgressDialog;
+
+    private MaterialDialog mErrorDialog;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -63,6 +68,32 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mAdapter = new ItemAdapter(getActivity(), 0, new ArrayList<Item>());
+
+        mProgressDialog = new MaterialDialog.Builder(getActivity())
+                .cancelable(false)
+                .customView(R.layout.dialog_progess_bar)
+                .hideActions()
+                .build();
+
+        mErrorDialog = new MaterialDialog.Builder(getActivity())
+                .cancelable(false)
+                .title(getString(R.string.dialog_title_error))
+                .content(getString(R.string.dialog_content_error))
+                .negativeText(getString(R.string.dialog_quit))
+                .positiveText(getString(R.string.dialog_retry))
+                .callback(new MaterialDialog.Callback() {
+                    @Override
+                    public void onPositive(MaterialDialog materialDialog) {
+                        loadData();
+                        materialDialog.cancel();
+                    }
+
+                    @Override
+                    public void onNegative(MaterialDialog materialDialog) {
+                        getActivity().finish();
+                    }
+                })
+                .build();
     }
 
     @Override
@@ -97,6 +128,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadData() {
+        mProgressDialog.show();
+
         TinyTubeController controller = new TinyTubeController();
         controller.search(new ControllerCallback<TinyTubeModel>() {
             @Override
@@ -106,30 +139,23 @@ public class HomeFragment extends Fragment {
                     setEmptyText(getString(R.string.empty_text));
                 else
                     mAdapter.addAll(response.getItems());
+                mProgressDialog.dismiss();
             }
 
             @Override
             public void onError(Exception error) {
-                Log.e(TAG, error.getMessage());
-                final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                        .title(getString(R.string.dialog_title_error))
-                        .content(getString(R.string.dialog_content_error))
-                        .callback(new MaterialDialog.SimpleCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                dialog.cancel();
-                            }
-                        })
-                        .build();
-                dialog.show();
+                if (!isAdded())
+                    return;
+
+                mErrorDialog.show();
+                mProgressDialog.dismiss();
             }
         });
     }
 
     /**
      * The default content for this Fragment has a TextView that is shown when
-     * the list is empty. If you would like to change the text, call this method
-     * to supply the text it should use.
+     * the list is empty.
      */
     public void setEmptyText(CharSequence emptyText) {
         View emptyView = mListView.getEmptyView();
